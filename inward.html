@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inward Entry Form</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(10px);
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(45deg, #4f46e5, #7c3aed);
+      color: white;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .hamburger {
+      font-size: 24px;
+      cursor: pointer;
+      padding: 10px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .hamburger:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: scale(1.05);
+    }
+
+    .header-title {
+      font-size: 28px;
+      font-weight: 600;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .top-controls {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .search-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 10px;
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+    }
+
+    .search-input {
+      padding: 8px 12px;
+      border: none;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.9);
+      color: #333;
+      font-size: 14px;
+      min-width: 150px;
+    }
+
+    .search-input:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+    }
+
+    .btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-search {
+      background: #06b6d4;
+      color: white;
+    }
+
+    .btn-filter {
+      background: #8b5cf6;
+      color: white;
+    }
+
+    .btn-logout {
+      background: #ef4444;
+      color: white;
+    }
+
+    .btn-success {
+      background: #10b981;
+      color: white;
+    }
+
+    .btn-warning {
+      background: #f59e0b;
+      color: white;
+    }
+
+    #sidebarMenu {
+      display: none;
+      position: fixed;
+      top: 80px;
+      left: 20px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+      list-style: none;
+      padding: 20px;
+      min-width: 200px;
+    }
+
+    #sidebarMenu li {
+      padding: 12px 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    #sidebarMenu li:last-child {
+      border-bottom: none;
+    }
+
+    #sidebarMenu li a {
+      text-decoration: none;
+      color: #334155;
+      font-weight: 500;
+      transition: color 0.3s ease;
+      display: block;
+      padding: 8px 12px;
+      border-radius: 8px;
+    }
+
+    #sidebarMenu li a:hover {
+      color: #4f46e5;
+      background: #f8fafc;
+    }
+
+    .form-container {
+      padding: 30px;
+    }
+
+    .form-title {
+      text-align: center;
+      color: #1e293b;
+      margin-bottom: 30px;
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group label {
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #374151;
+      font-size: 14px;
+    }
+
+    .form-group input {
+      padding: 12px 16px;
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      background: #f9fafb;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #4f46e5;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    .form-actions .btn {
+      padding: 12px 24px;
+      font-size: 16px;
+      border-radius: 12px;
+    }
+
+    .message {
+      text-align: center;
+      margin-top: 20px;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 500;
+    }
+
+    .message.success {
+      background: #dcfce7;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+    }
+
+    .message.error {
+      background: #fef2f2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+    }
+
+    .message.info {
+      background: #dbeafe;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+    }
+
+    .table-container {
+      padding: 0 30px 30px;
+    }
+
+    .table-title {
+      color: #1e293b;
+      margin-bottom: 20px;
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+      max-height: 500px;
+      overflow-y: auto;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    thead {
+      background: linear-gradient(45deg, #4f46e5, #7c3aed);
+      color: white;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #e5e7eb;
+      font-size: 14px;
+    }
+
+    th {
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-size: 12px;
+    }
+
+    tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    tr:hover {
+      background: #f1f5f9;
+      transform: scale(1.001);
+      transition: all 0.2s ease;
+    }
+
+    .material-column {
+      max-width: 150px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .action-btn {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      margin: 2px;
+    }
+
+    .action-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-delete {
+      background: #ef4444;
+      color: white;
+    }
+
+    .btn-edit {
+      background: #3b82f6;
+      color: white;
+    }
+
+    @media (max-width: 768px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .top-controls {
+        flex-direction: column;
+        gap: 10px;
+      }
+      
+      .search-group {
+        flex-direction: column;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="hamburger" onclick="toggleMenu()">☰</div>
+      <div class="header-title">Inward Entry</div>
+      <div class="top-controls">
+        <div class="search-group">
+          <input type="text" id="searchMaterial" class="search-input" placeholder="Search by Material">
+          <button onclick="searchByMaterial()" class="btn btn-search">Search</button>
+        </div>
+        <div class="search-group">
+          <input type="date" id="fromDate" class="search-input">
+          <input type="date" id="toDate" class="search-input">
+          <button onclick="searchByDateRange()" class="btn btn-filter">Filter</button>
+        </div>
+        <button onclick="logout()" class="btn btn-logout">Logout</button>
+      </div>
+    </div>
+
+    <ul id="sidebarMenu">
+      <li><a href="/home" onclick="localStorage.removeItem('loggedIn')">Home</a></li>
+      <li><a href="/inward">Inward</a></li>
+      <li><a href="/issue">Issue</a></li>
+      <li><a href="/stock">Stock</a></li>
+    </ul>
+
+    <div class="form-container">
+      <h2 class="form-title">Inward Entry Form</h2>
+      <form id="entryForm">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="method">Invoice Category</label>
+            <input type="text" id="method" name="method" required>
+          </div>
+          <div class="form-group">
+            <label for="in_no">Invoice Number</label>
+            <input type="text" id="in_no" name="in_no" required>
+          </div>
+          <div class="form-group">
+            <label for="inward_date">Inward Date</label>
+            <input type="date" id="inward_date" name="inward_date" required>
+          </div>
+          <div class="form-group">
+            <label for="grn_no">GRN Number</label>
+            <input type="text" id="grn_no" name="grn_no">
+          </div>
+          <div class="form-group">
+            <label for="bill_no">Bill Number</label>
+            <input type="text" id="bill_no" name="bill_no">
+          </div>
+          <div class="form-group">
+            <label for="bill_date">Bill Date</label>
+            <input type="date" id="bill_date" name="bill_date">
+          </div>
+          <div class="form-group">
+            <label for="party_name">Party Name</label>
+            <input type="text" id="party_name" name="party_name">
+          </div>
+          <div class="form-group">
+            <label for="material">Material</label>
+            <input type="text" id="material" name="material">
+          </div>
+          <div class="form-group">
+            <label for="material_code">Material Code</label>
+            <input type="text" id="material_code" name="material_code">
+          </div>
+          <div class="form-group">
+            <label for="unit">Unit</label>
+            <input type="text" id="unit" name="unit">
+          </div>
+          <div class="form-group">
+            <label for="bill_qty">Bill Qty</label>
+            <input type="number" step="any" id="bill_qty" name="bill_qty" min="0">
+          </div>
+          <div class="form-group">
+            <label for="rate">Rate</label>
+            <input type="number" step="any" id="rate" name="rate" min="0">
+          </div>
+          <div class="form-group">
+            <label for="gst_percent">GST %</label>
+            <input type="number" step="any" id="gst_percent" name="gst_percent" min="0">
+          </div>
+          <div class="form-group">
+            <label for="unloading">Place of Use</label>
+            <input type="text" id="unloading" name="unloading">
+          </div>
+          <div class="form-group">
+            <label for="remarks">Remarks</label>
+            <input type="text" id="remarks" name="remarks">
+          </div>
+          <div class="form-group">
+            <label for="part_no_make">Material Category</label>
+            <input type="text" id="part_no_make" name="part_no_make">
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <input type="hidden" id="edit_sr_no" name="edit_sr_no">
+          <button type="submit" class="btn btn-success">Add Entry</button>
+          <button type="button" onclick="submitUpdate()" id="updateButton" class="btn btn-warning" style="display:none;">Update Entry</button>
+          <button type="button" onclick="resetForm()" class="btn btn-search">Reset</button>
+          <button type="button" onclick="downloadCSV()" class="btn btn-success">Download CSV</button>
+        </div>
+
+        <div class="message" id="message" style="display:none;"></div>
+      </form>
+    </div>
+
+    <div class="table-container">
+      <h2 class="table-title">Inward Entries</h2>
+      <div class="table-wrapper">
+        <table id="entriesTable">
+          <thead>
+            <tr>
+              <th>Sr No</th>
+              <th>Category</th>
+              <th>Invoice No</th>
+              <th>Inward Date</th>
+              <th>GRN No</th>
+              <th>Bill No</th>
+              <th>Bill Date</th>
+              <th>Party Name</th>
+              <th>Material</th>
+              <th>Material Code</th>
+              <th>Unit</th>
+              <th>Bill Qty</th>
+              <th>Rate</th>
+              <th>GST %</th>
+              <th>Place of Use</th>
+              <th>Remarks</th>
+              <th>Material Category</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="entriesBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    async function loadEntries() {
+      try {
+        const response = await fetch("http://localhost:8000/entries/");
+        const entries = await response.json();
+
+        const tbody = document.getElementById("entriesBody");
+        tbody.innerHTML = "";
+
+        entries.forEach(entry => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${entry.sr_no}</td>
+            <td>${entry.method}</td>
+            <td>${entry.in_no}</td>
+            <td>${entry.inward_date}</td>
+            <td>${entry.grn_no}</td>
+            <td>${entry.bill_no}</td>
+            <td>${entry.bill_date}</td>
+            <td>${entry.party_name}</td>
+            <td class="material-column" title="${entry.material}">${entry.material}</td>
+            <td>${entry.material_code}</td>
+            <td>${entry.unit}</td>
+            <td>${entry.bill_qty}</td>
+            <td>${entry.rate}</td>
+            <td>${entry.gst_percent}</td>
+            <td>${entry.unloading}</td>
+            <td>${entry.remarks}</td>
+            <td>${entry.part_no_make}</td>
+            <td>
+              <button onclick="editEntry(${entry.sr_no})" class="action-btn btn-edit">Edit</button>
+              <button onclick="removeEntry(${entry.sr_no})" class="action-btn btn-delete">Delete</button>
+            </td>
+          `;
+          tbody.appendChild(row);
+        });
+      } catch (error) {
+        console.error("Error fetching entries:", error);
+        showMessage("Failed to load entries", "error");
+      }
+    }
+
+   async function downloadCSV() {
+  try {
+    // Get all entries from the API
+    const response = await fetch("http://localhost:8000/entries/");
+    if (!response.ok) {
+      throw new Error('Failed to fetch entries');
+    }
+    const entries = await response.json();
+
+    if (entries.length === 0) {
+      showMessage("No data to download", "info");
+      return;
+    }
+
+    // Define CSV headers
+    const headers = [
+      'Sr No', 'Invoice Category', 'Invoice Number', 'Inward Date', 'GRN Number',
+      'Bill Number', 'Bill Date', 'Party Name', 'Material', 'Material Code',
+      'Unit', 'Bill Qty', 'Rate', 'GST %', 'Place of Use', 'Remarks', 'Material Category'
+    ];
+
+    // Convert entries to CSV format
+    const csvContent = [
+      headers.join(','), // Header row
+      ...entries.map(entry => [
+        entry.sr_no || '',
+        `"${(entry.method || '').replace(/"/g, '""')}"`,
+        `"${(entry.in_no || '').replace(/"/g, '""')}"`,
+        entry.inward_date || '',
+        `"${(entry.grn_no || '').replace(/"/g, '""')}"`,
+        `"${(entry.bill_no || '').replace(/"/g, '""')}"`,
+        entry.bill_date || '',
+        `"${(entry.party_name || '').replace(/"/g, '""')}"`,
+        `"${(entry.material || '').replace(/"/g, '""')}"`,
+        `"${(entry.material_code || '').replace(/"/g, '""')}"`,
+        `"${(entry.unit || '').replace(/"/g, '""')}"`,
+        entry.bill_qty || '',
+        entry.rate || '',
+        entry.gst_percent || '',
+        `"${(entry.unloading || '').replace(/"/g, '""')}"`,
+        `"${(entry.remarks || '').replace(/"/g, '""')}"`,
+        `"${(entry.part_no_make || '').replace(/"/g, '""')}"`,
+      ].join(','))
+    ];
+
+    // Create and trigger download
+    const blob = new Blob([csvContent.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", "entries.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+  } catch (error) {
+    console.error("Error downloading CSV:", error);
+    showMessage("Error downloading CSV", "error");
+  }
+}
+
+window.onload = loadEntries;
+
+    const form = document.getElementById("entryForm");
+    const messageBox = document.getElementById("message");
+
+    function showMessage(text, type) {
+      messageBox.innerText = text;
+      messageBox.className = `message ${type}`;
+      messageBox.style.display = "block";
+      setTimeout(() => {
+        messageBox.style.display = "none";
+      }, 5000);
+    }
+
+    form.addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
+
+      data.bill_qty = parseFloat(data.bill_qty);
+      data.rate = parseFloat(data.rate);
+      data.gst_percent = parseFloat(data.gst_percent);
+
+      try {
+        const response = await fetch("http://localhost:8000/entries/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          showMessage(`✅ Entry Added Successfully (Sr No: ${result.sr_no})`, "success");
+          form.reset();
+          loadEntries();
+        } else {
+          const err = await response.json();
+          showMessage(`❌ Error: ${err.detail}`, "error");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        showMessage("❌ Failed to connect to server.", "error");
+      }
+    });
+
+    async function removeEntry(sr_no) {
+      if (!confirm("Are you sure you want to delete this entry?")) return;
+
+      try {
+        const response = await fetch(`http://localhost:8000/entries/${sr_no}`, {
+          method: "DELETE"
+        });
+
+        if (response.ok) {
+          showMessage(`✅ Entry with Sr No ${sr_no} deleted successfully`, "success");
+          loadEntries();
+        } else {
+          const error = await response.json();
+          showMessage(`❌ Error: ${error.detail}`, "error");
+        }
+      } catch (err) {
+        console.error("Delete error:", err);
+        showMessage("❌ Failed to delete entry.", "error");
+      }
+    }
+
+    async function editEntry(sr_no) {
+      try {
+        const response = await fetch(`http://localhost:8000/entries/${sr_no}`);
+        if (!response.ok) throw new Error("Entry not found");
+        
+        const entry = await response.json();
+
+        for (const key in entry) {
+          if (document.getElementById(key)) {
+            document.getElementById(key).value = entry[key];
+          }
+        }
+
+        document.getElementById("edit_sr_no").value = sr_no;
+        document.getElementById("updateButton").style.display = "inline-block";
+        showMessage(`Editing Sr No: ${sr_no}`, "info");
+      } catch (err) {
+        console.error(err);
+        showMessage("❌ Could not load entry for editing.", "error");
+      }
+    }
+
+    async function submitUpdate() {
+      const sr_no = document.getElementById("edit_sr_no").value;
+      if (!sr_no) return showMessage("❌ No entry selected for update.", "error");
+
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
+
+      data.bill_qty = parseFloat(data.bill_qty);
+      data.rate = parseFloat(data.rate);
+      data.gst_percent = parseFloat(data.gst_percent);
+
+      try {
+        const response = await fetch(`http://localhost:8000/entries/${sr_no}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+          showMessage(`✅ Entry updated (Sr No: ${sr_no})`, "success");
+          form.reset();
+          document.getElementById("updateButton").style.display = "none";
+          document.getElementById("edit_sr_no").value = "";
+          loadEntries();
+        } else {
+          const err = await response.json();
+          showMessage(`❌ Error: ${err.detail}`, "error");
+        }
+      } catch (error) {
+        console.error("Update failed:", error);
+        showMessage("❌ Failed to update entry.", "error");
+      }
+    }
+
+    function toggleMenu() {
+      const menu = document.getElementById("sidebarMenu");
+      menu.style.display = (menu.style.display === "none" || menu.style.display === "") ? "block" : "none";
+    }
+
+    async function searchByMaterial() {
+      const material = document.getElementById("searchMaterial").value.toLowerCase();
+      if (!material) {
+        loadEntries();
+        return;
+      }
+
+      try {
+        const response = await fetch("http://localhost:8000/entries/");
+        const entries = await response.json();
+
+        const filtered = entries.filter(entry => 
+          entry.material.toLowerCase().includes(material)
+        );
+
+        displayEntries(filtered);
+        
+        if (filtered.length === 0) {
+          showMessage("No entries found for the specified material", "info");
+        }
+      } catch (error) {
+        console.error("Search error:", error);
+        showMessage("❌ Failed to search entries", "error");
+      }
+    }
+
+    async function searchByDateRange() {
+      const fromDate = new Date(document.getElementById("fromDate").value);
+      const toDate = new Date(document.getElementById("toDate").value);
+
+      if (!fromDate || !toDate) {
+        showMessage("Please select both From and To dates.", "error");
+        return;
+      }
+
+      try {
+        const response = await fetch("http://localhost:8000/entries/");
+        const entries = await response.json();
+
+        const filtered = entries.filter(entry => {
+          const inwardDate = new Date(entry.inward_date);
+          return inwardDate >= fromDate && inwardDate <= toDate;
+        });
+
+        displayEntries(filtered);
+        
+        if (filtered.length === 0) {
+          showMessage("No entries found in the specified date range", "info");
+        }
+      } catch (error) {
+        console.error("Date filter error:", error);
+        showMessage("❌ Failed to filter entries", "error");
+      }
+    }
+
+    function displayEntries(entries) {
+      const tbody = document.getElementById("entriesBody");
+      tbody.innerHTML = "";
+
+      entries.forEach(entry => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${entry.sr_no}</td>
+          <td>${entry.method}</td>
+          <td>${entry.in_no}</td>
+          <td>${entry.inward_date}</td>
+          <td>${entry.grn_no}</td>
+          <td>${entry.bill_no}</td>
+          <td>${entry.bill_date}</td>
+          <td>${entry.party_name}</td>
+          <td class="material-column" title="${entry.material}">${entry.material}</td>
+          <td>${entry.material_code}</td>
+          <td>${entry.unit}</td>
+          <td>${entry.bill_qty}</td>
+          <td>${entry.rate}</td>
+          <td>${entry.gst_percent}</td>
+          <td>${entry.unloading}</td>
+          <td>${entry.remarks}</td>
+          <td>${entry.part_no_make}</td>
+          <td>
+            <button onclick="editEntry(${entry.sr_no})" class="action-btn btn-edit">Edit</button>
+            <button onclick="removeEntry(${entry.sr_no})" class="action-btn btn-delete">Delete</button>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function resetForm() {
+      document.getElementById("entryForm").reset();
+      document.getElementById("edit_sr_no").value = "";
+      document.getElementById("searchMaterial").value = "";
+      document.getElementById("fromDate").value = "";
+      document.getElementById("toDate").value = "";
+      loadEntries();
+      document.getElementById("updateButton").style.display = "none";
+      showMessage("Form reset successfully", "info");
+    }
+
+    function logout() {
+      if (confirm("Are you sure you want to logout?")) {
+        localStorage.removeItem("access_token");
+        window.location.href = "/home";
+      }
+    }
+
+    // Close menu when clicking outside
+    document.addEventListener('click', function(event) {
+      const menu = document.getElementById('sidebarMenu');
+      const hamburger = document.querySelector('.hamburger');
+      
+      if (!menu.contains(event.target) && !hamburger.contains(event.target)) {
+        menu.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>

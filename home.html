@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>KH Construction Portal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    
+    <!-- Bootstrap & Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        /* Base Styles */
+        .hidden { 
+            display: none; 
+        }
+        
+        /* Glass Effect Buttons */
+        .btn-glass {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .btn-glass:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        /* Circle Images */
+        .circle-img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 50%;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+            transition: all 0.3s ease;
+            margin: 0 auto;
+        }
+        
+        .card:hover .circle-img {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+        
+        /* Card Animations */
+        .card {
+            transition: all 0.3s ease;
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card-body {
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        /* Login Form Enhancements */
+        .login-container {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-control {
+            border-radius: 10px;
+            border: 2px solid #e2e8f0;
+            padding: 12px 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        
+        /* Hero Section */
+        .hero-overlay {
+            background: linear-gradient(45deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.3));
+        }
+        
+        .hero-title {
+            animation: fadeInUp 1s ease-out;
+        }
+        
+        .hero-subtitle {
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Carousel Enhancements */
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+        }
+        
+        /* Section Animations */
+        .section-animate {
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Quick Tools Grid */
+        .quick-tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Footer Enhancements */
+        .footer-link {
+            transition: color 0.3s ease;
+        }
+        
+        .footer-link:hover {
+            color: #667eea !important;
+        }
+        
+        /* Responsive Typography */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+        }
+        
+        /* Loading Animation */
+        .loading {
+            opacity: 0;
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-br from-indigo-700 via-purple-600 to-blue-500 min-h-screen text-white">
+
+    <!-- LOGIN PAGE -->
+    <div id="loginPage" class="flex items-center justify-center min-h-screen p-4">
+        <div class="login-container text-gray-800 p-8 w-full max-w-md">
+            <div class="text-center mb-6">
+                <h2 class="text-3xl font-bold text-indigo-700 mb-2">🔐 Login to KH Construction</h2>
+                <p class="text-gray-600">Access your construction management portal</p>
+            </div>
+            
+            <form onsubmit="login(event)" class="space-y-4">
+                <div>
+                    <label for="username" class="block text-sm font-medium text-gray-700 mb-2">Username</label>
+                    <input type="text" id="username" class="form-control w-full" placeholder="Enter your username" required />
+                </div>
+                
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                    <input type="password" id="password" class="form-control w-full" placeholder="Enter your password" required />
+                </div>
+                
+                <button type="submit" class="btn btn-primary w-full py-3 rounded-lg font-semibold text-lg transition-all duration-300 hover:bg-indigo-600 hover:transform hover:scale-105">
+                    Login
+                </button>
+            </form>
+            
+            <div class="text-center mt-4 p-3 bg-gray-50 rounded-lg">
+                <p class="text-sm text-gray-600">
+                    <span class="font-semibold">Demo Credentials:</span><br>
+                    Username: <code class="bg-gray-200 px-2 py-1 rounded">admin</code><br>
+                    Password: <code class="bg-gray-200 px-2 py-1 rounded">1234</code>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- HOME PAGE -->
+    <div id="homePage" class="hidden bg-white text-gray-800 loading">
+
+        <!-- NAVBAR -->
+        <nav class="navbar navbar-expand-lg bg-dark navbar-dark shadow-lg">
+            <div class="container-fluid px-4">
+                <a class="navbar-brand fw-bold text-white d-flex align-items-center" href="#">
+                    <span class="me-2">🏗️</span>
+                    <span>KH Construction</span>
+                </a>
+                <div class="ms-auto">
+                    <button onclick="logout()" class="btn btn-outline-light btn-sm px-4 py-2 transition-all duration-300 hover:bg-light hover:text-dark">
+                        🔓 Logout
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- HERO SECTION WITH CAROUSEL -->
+        <div class="relative w-full h-[500px] overflow-hidden">
+            <!-- Carousel -->
+            <div id="carouselExample" class="carousel slide h-full" data-bs-ride="carousel" data-bs-interval="5000">
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#carouselExample" data-bs-slide-to="0" class="active"></button>
+                    <button type="button" data-bs-target="#carouselExample" data-bs-slide-to="1"></button>
+                    <button type="button" data-bs-target="#carouselExample" data-bs-slide-to="2"></button>
+                </div>
+                
+                <div class="carousel-inner h-full">
+                    <div class="carousel-item active h-full">
+                        <img src="img/danist-soh-8Gg2Ne_uTcM-unsplash.jpg" class="d-block w-100 h-full object-cover" alt="Construction Site 1">
+                    </div>
+                    <div class="carousel-item h-full">
+                        <img src="img/jeriden-villegas-VLPUm5wP5Z0-unsplash.jpg" class="d-block w-100 h-full object-cover" alt="Construction Site 2">
+                    </div>
+                    <div class="carousel-item h-full">
+                        <img src="img/scott-blake-x-ghf9LjrVg-unsplash.jpg" class="d-block w-100 h-full object-cover" alt="Construction Site 3">
+                    </div>
+                </div>
+                
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+
+            <!-- Hero Overlay Content -->
+            <div class="absolute inset-0 flex flex-col items-center justify-center hero-overlay text-white text-center px-4">
+                <h1 class="hero-title text-4xl md:text-6xl font-bold drop-shadow-lg mb-4">
+                    Welcome to KH Constructions
+                </h1>
+                <p class="hero-subtitle text-lg md:text-2xl drop-shadow-md max-w-2xl">
+                    Your comprehensive digital hub for construction logistics and project management
+                </p>
+            </div>
+        </div>
+
+        <!-- QUICK TOOLS SECTION -->
+        <section class="py-16 bg-gray-50 section-animate">
+            <div class="container px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-bold text-indigo-700 mb-4">🚀 Quick Access Tools</h2>
+                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                        Streamline your construction operations with our powerful management tools
+                    </p>
+                </div>
+                
+                <div class="quick-tools-grid px-4">
+                    <a href="/inward" class="btn-glass p-8 text-center rounded-2xl shadow-lg text-white bg-gradient-to-br from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800">
+                        <div class="text-5xl mb-4">📥</div>
+                        <h3 class="text-2xl font-bold mb-3">Inward Management</h3>
+                        <p class="text-indigo-100">Log and track all materials arriving at your construction site with detailed documentation</p>
+                    </a>
+                    
+                    <a href="/issue" class="btn-glass p-8 text-center rounded-2xl shadow-lg text-white bg-gradient-to-br from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800">
+                        <div class="text-5xl mb-4">📤</div>
+                        <h3 class="text-2xl font-bold mb-3">Issue Tracking</h3>
+                        <p class="text-purple-100">Monitor and record all items issued from your inventory with complete traceability</p>
+                    </a>
+                    
+                    <a href="/stock" class="btn-glass p-8 text-center rounded-2xl shadow-lg text-white bg-gradient-to-br from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800">
+                        <div class="text-5xl mb-4">📦</div>
+                        <h3 class="text-2xl font-bold mb-3">Stock Management</h3>
+                        <p class="text-blue-100">Real-time inventory overview with detailed stock levels and usage analytics</p>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- FEATURES SECTION -->
+        <section class="py-16 bg-white section-animate">
+            <div class="container px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-bold text-purple-700 mb-4">🛠️ Advanced Features</h2>
+                    <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                        Discover the comprehensive capabilities that make BuildSmart the ultimate construction management solution
+                    </p>
+                </div>
+                
+                <div class="row g-5 justify-content-center">
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card h-100 shadow-lg hover:shadow-xl transition-all duration-300">
+                            <div class="card-body">
+                                <img src="https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=120&h=120&fit=crop&crop=center" class="circle-img mb-4" alt="Real-time Inventory">
+                                <h5 class="card-title text-xl font-bold text-blue-700 mb-3">Real-Time Inventory Check</h5>
+                                <p class="card-text text-gray-600 leading-relaxed">
+                                    Stay updated with live stock levels, track usage trends, and prevent stockouts with our intelligent inventory management system that syncs in real-time.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card h-100 shadow-lg hover:shadow-xl transition-all duration-300">
+                            <div class="card-body">
+                                <img src="https://images.unsplash.com/photo-1587293852726-70cdb56c2866?w=120&h=120&fit=crop&crop=center" class="circle-img mb-4" alt="Material Logging">
+                                <h5 class="card-title text-xl font-bold text-indigo-700 mb-3">Smart Material Logging</h5>
+                                <p class="card-text text-gray-600 leading-relaxed">
+                                    Efficiently log all incoming materials with automated documentation, delivery tracking, and seamless integration with your inventory database.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card h-100 shadow-lg hover:shadow-xl transition-all duration-300">
+                            <div class="card-body">
+                                <img src="https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=120&h=120&fit=crop&crop=center" class="circle-img mb-4" alt="Stock Movement">
+                                <h5 class="card-title text-xl font-bold text-purple-700 mb-3">Advanced Stock Tracking</h5>
+                                <p class="card-text text-gray-600 leading-relaxed">
+                                    Monitor every stock movement with detailed analytics, improve accountability, and maintain complete visibility over your construction materials.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ABOUT SECTION -->
+        <section class="py-16 bg-gradient-to-r from-gray-50 to-gray-100 section-animate">
+            <div class="container px-4">
+                <div class="text-center mb-8">
+                    <h2 class="text-4xl font-bold text-indigo-800 mb-4">📘 About BuildSmart</h2>
+                </div>
+                
+                <div class="row align-items-center">
+                    <div class="col-lg-6 mb-5 mb-lg-0">
+                        <div class="bg-white p-6 rounded-2xl shadow-lg">
+                            <p class="text-lg text-gray-700 leading-relaxed mb-4">
+                                KH Construction represents the future of construction logistics management. Our comprehensive platform empowers contractors, engineers, and project managers with cutting-edge tools designed to streamline operations and maximize efficiency.
+                            </p>
+                            <p class="text-lg text-gray-700 leading-relaxed">
+                                With real-time inventory tracking, automated material logging, and advanced analytics, we're revolutionizing how construction projects manage their resources and maintain operational excellence.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-6">
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <div class="bg-indigo-100 p-4 rounded-xl text-center">
+                                    <div class="text-3xl font-bold text-indigo-600">500+</div>
+                                    <div class="text-sm text-indigo-800">Active Projects</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="bg-purple-100 p-4 rounded-xl text-center">
+                                    <div class="text-3xl font-bold text-purple-600">50K+</div>
+                                    <div class="text-sm text-purple-800">Materials Tracked</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="bg-blue-100 p-4 rounded-xl text-center">
+                                    <div class="text-3xl font-bold text-blue-600">99.9%</div>
+                                    <div class="text-sm text-blue-800">Uptime</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="bg-green-100 p-4 rounded-xl text-center">
+                                    <div class="text-3xl font-bold text-green-600">24/7</div>
+                                    <div class="text-sm text-green-800">Support</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="bg-gray-900 text-gray-300 py-12">
+            <div class="container px-4">
+                <div class="row g-5">
+                    <div class="col-lg-6 mb-4">
+                        <h5 class="text-white text-xl font-bold mb-4 flex items-center">
+                            <span class="me-2">📍</span>
+                            KH Construction
+                        </h5>
+                        <div class="mb-4">
+                            <p class="text-lg leading-relaxed">
+                                123 Skyline Tower, 4th Floor<br>
+                                Downtown District, Mumbai, India<br>
+                                <span class="text-indigo-400">Pin: 400001</span>
+                            </p>
+                        </div>
+                        <div class="d-flex flex-wrap gap-3">
+                            <a href="#" class="footer-link text-decoration-none d-flex align-items-center">
+                                <span class="me-2">🌐</span>Website
+                            </a>
+                            <a href="#" class="footer-link text-decoration-none d-flex align-items-center">
+                                <span class="me-2">📘</span>Facebook
+                            </a>
+                            <a href="#" class="footer-link text-decoration-none d-flex align-items-center">
+                                <span class="me-2">📸</span>Instagram
+                            </a>
+                            <a href="#" class="footer-link text-decoration-none d-flex align-items-center">
+                                <span class="me-2">💼</span>LinkedIn
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-6">
+                        <h5 class="text-white text-xl font-bold mb-4">📍 Find Us</h5>
+                        <div class="ratio ratio-16x9 rounded-2xl overflow-hidden shadow-lg">
+                            <iframe
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3771.4471!2d72.8777!3d19.0760!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTnCsDA0JzMzLjYiTiA3MsKwNTInMzkuNyJF!5e0!3m2!1sen!2sin!4v1625000000000!5m2!1sen!2sin"
+                                style="border:0;"
+                                allowfullscreen=""
+                                loading="lazy"
+                                referrerpolicy="no-referrer-when-downgrade">
+                            </iframe>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="border-t border-gray-700 mt-8 pt-6 text-center">
+                    <p class="text-sm text-gray-400">
+                        © 2025 KH Construction Portal · Crafted with 
+                        <span class="text-red-400">❤️</span> using Bootstrap & Tailwind CSS
+                    </p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- SCRIPTS -->
+<script>
+    // Enhanced login function with form validation and login state saving
+    function login(event) {
+        if (event) {
+            event.preventDefault();
+        }
+
+        const username = document.getElementById("username").value.trim();
+        const password = document.getElementById("password").value.trim();
+
+        const loginBtn = document.querySelector('button[type="submit"]');
+        const originalText = loginBtn.textContent;
+        loginBtn.textContent = 'Logging in...';
+        loginBtn.disabled = true;
+
+        setTimeout(() => {
+            if (username === "admin" && password === "1234") {
+                localStorage.setItem("loggedIn", "true");
+
+                document.getElementById("loginPage").classList.add("hidden");
+                document.getElementById("homePage").classList.remove("hidden");
+
+                document.getElementById("homePage").style.opacity = "0";
+                setTimeout(() => {
+                    document.getElementById("homePage").style.opacity = "1";
+                }, 100);
+            } else {
+                alert("❌ Invalid credentials! Please use:\nUsername: admin\nPassword: 1234");
+            }
+
+            loginBtn.textContent = originalText;
+            loginBtn.disabled = false;
+        }, 1000);
+    }
+
+    // Logout function with login state removal
+    function logout() {
+        localStorage.removeItem("loggedIn");
+
+        const homePage = document.getElementById("homePage");
+        homePage.style.opacity = "0";
+
+        setTimeout(() => {
+            homePage.classList.add("hidden");
+            document.getElementById("loginPage").classList.remove("hidden");
+
+            document.getElementById("username").value = "";
+            document.getElementById("password").value = "";
+
+            homePage.style.opacity = "1";
+        }, 300);
+    }
+
+    // Check login state on page load
+    window.addEventListener("DOMContentLoaded", () => {
+        const loggedIn = localStorage.getItem("loggedIn");
+        if (loggedIn === "true") {
+            document.getElementById("loginPage").classList.add("hidden");
+            document.getElementById("homePage").classList.remove("hidden");
+        }
+    });
+
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+
+    // Intersection observer for section animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.section-animate').forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(20px)';
+            section.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+            observer.observe(section);
+        });
+    });
+</script>
+    
+    <!-- Bootstrap Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

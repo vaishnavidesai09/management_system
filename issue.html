@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Issue Entry Management</title>
+  <style>
+    :root {
+      --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      --danger-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+      --dark-gradient: linear-gradient(135deg, #434343 0%, #000000 100%);
+      --light-gradient: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+      --warning-gradient: linear-gradient(135deg, #fdbb2d 0%, #22c1c3 100%);
+      
+      --text-primary: #2c3e50;
+      --text-secondary: #7f8c8d;
+      --bg-primary: #f8f9fa;
+      --bg-secondary: #ffffff;
+      --border-light: #e9ecef;
+      --shadow-light: 0 2px 15px rgba(0,0,0,0.1);
+      --shadow-medium: 0 4px 25px rgba(0,0,0,0.15);
+      --shadow-heavy: 0 8px 35px rgba(0,0,0,0.2);
+      
+      --border-radius: 12px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: var(--bg-secondary);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-heavy);
+      overflow: hidden;
+    }
+
+    .header {
+      background: var(--primary-gradient);
+      color: white;
+      padding: 30px;
+      text-align: center;
+      position: relative;
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .header p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+
+    .hamburger-menu {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 1000;
+    }
+
+    .hamburger {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      padding: 12px 16px;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: var(--transition);
+      backdrop-filter: blur(10px);
+    }
+
+    .hamburger:hover {
+      background: rgba(255,255,255,0.3);
+      transform: translateY(-2px);
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      top: 60px;
+      left: 0;
+      background: var(--bg-secondary);
+      min-width: 200px;
+      box-shadow: var(--shadow-medium);
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      z-index: 999;
+    }
+
+    .dropdown-content a {
+      display: block;
+      padding: 15px 20px;
+      color: var(--text-primary);
+      text-decoration: none;
+      transition: var(--transition);
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .dropdown-content a:last-child {
+      border-bottom: none;
+    }
+
+    .dropdown-content a:hover {
+      background: var(--primary-gradient);
+      color: white;
+    }
+
+    .top-buttons {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .content {
+      padding: 40px;
+    }
+
+    .message {
+      padding: 15px 20px;
+      margin-bottom: 30px;
+      border-radius: var(--border-radius);
+      font-weight: 500;
+      display: none;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    .message.success {
+      background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .message.error {
+      background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .form-container {
+      background: var(--bg-secondary);
+      border-radius: var(--border-radius);
+      padding: 30px;
+      margin-bottom: 40px;
+      box-shadow: var(--shadow-light);
+      border: 1px solid var(--border-light);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+      margin-bottom: 30px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .field label {
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+      font-size: 0.95rem;
+    }
+
+    .field input,
+    .field textarea {
+      padding: 12px 16px;
+      border: 2px solid var(--border-light);
+      border-radius: var(--border-radius);
+      font-size: 1rem;
+      transition: var(--transition);
+      background: var(--bg-secondary);
+    }
+
+    .field input:focus,
+    .field textarea:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      transform: translateY(-1px);
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: var(--transition);
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+      min-width: 120px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-medium);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn-primary {
+      background: var(--primary-gradient);
+      color: white;
+    }
+
+    .btn-secondary {
+      background: var(--secondary-gradient);
+      color: white;
+    }
+
+    .btn-success {
+      background: var(--success-gradient);
+      color: white;
+    }
+
+    .btn-danger {
+      background: var(--danger-gradient);
+      color: white;
+    }
+
+    .btn-dark {
+      background: var(--dark-gradient);
+      color: white;
+    }
+
+    .btn-light {
+      background: var(--light-gradient);
+      color: var(--text-primary);
+    }
+
+    .btn-warning {
+      background: var(--warning-gradient);
+      color: white;
+    }
+
+    .btn-logout {
+      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+      color: white;
+    }
+
+    .form-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .search-container {
+      background: var(--bg-secondary);
+      border-radius: var(--border-radius);
+      padding: 25px;
+      margin-bottom: 30px;
+      box-shadow: var(--shadow-light);
+      border: 1px solid var(--border-light);
+    }
+
+    .search-grid {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 15px;
+      align-items: end;
+    }
+
+    .table-container {
+      background: var(--bg-secondary);
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      box-shadow: var(--shadow-light);
+      border: 1px solid var(--border-light);
+    }
+
+    .table-header {
+      background: var(--primary-gradient);
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .table-header h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .table-wrapper {
+      overflow: auto;
+      max-height: 600px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    th, td {
+      padding: 15px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    th {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      color: var(--text-primary);
+      font-weight: 600;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    tr:hover {
+      background: linear-gradient(135deg, #f8f9fa 0%, #f1f3f4 100%);
+    }
+
+    .table-btn {
+      padding: 8px 16px;
+      font-size: 0.85rem;
+      min-width: 80px;
+    }
+
+    .utilities {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .utility-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    @media (max-width: 768px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .search-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .form-buttons {
+        flex-direction: column;
+      }
+      
+      .top-buttons {
+        position: static;
+        justify-content: center;
+        margin-top: 20px;
+      }
+      
+      .utilities {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .content {
+        padding: 20px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 10px;
+      }
+      
+      .header h1 {
+        font-size: 2rem;
+      }
+      
+      .btn {
+        min-width: 100px;
+        font-size: 0.9rem;
+      }
+    }
+
+      .search-grid {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+
+  .search-grid .field {
+    display: flex;
+    flex-direction: column;
+    margin-right: 10px;
+  }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <!-- Hamburger Menu -->
+      <div class="hamburger-menu">
+        <button class="hamburger">☰</button>
+        <div class="dropdown-content">
+          <a href="/home" onclick="localStorage.removeItem('loggedIn')">Home</a>
+          <a href="/inward">Inward</a>
+          <a href="/issue">Issue</a>
+          <a href="/stock">Stock</a>
+        </div>
+      </div>
+
+      <!-- Top Right Buttons -->
+      <div class="top-buttons">
+        <button id="refreshBtn" class="btn btn-success">Refresh</button>
+        <button id="downloadBtn" class="btn btn-dark">Download CSV</button>
+        <button id="logoutBtn" class="btn btn-logout">Logout</button>
+      </div>
+
+      <h1>Issue Entry</h1>
+      <p>Add your inventory issue entries </p>
+    </div>
+
+    <div class="content">
+      <div id="message" class="message"></div>
+
+      <div class="form-container">
+        <form id="entryForm">
+          <input type="hidden" id="sr_no" name="sr_no">
+          <div class="form-grid">
+            <div class="field">
+              <label for="issue_date">Issue Date</label>
+              <input type="date" id="issue_date" name="issue_date" required>
+            </div>
+
+            <div class="field">
+              <label for="material">Material</label>
+              <input type="text" id="material" name="material" required>
+            </div>
+
+            <div class="field">
+              <label for="party_name">Party Name</label>
+              <input type="text" id="party_name" name="party_name" required>
+            </div>
+
+            <div class="field">
+              <label for="quantity">Quantity</label>
+              <input type="number" min="0" id="quantity" name="quantity" required>
+            </div>
+
+            <div class="field">
+              <label for="remarks">Remarks</label>
+              <input type="text" id="remarks" name="remarks">
+            </div>
+
+            <div class="field">
+              <label for="slip_no">Slip No</label>
+              <input type="number" id="slip_no" name="slip_no" required min="0">
+            </div>
+
+            <div class="field">
+              <label for="unit">Unit</label>
+              <input type="text" id="unit" name="unit" required>
+            </div>
+
+            <div class="field">
+              <label for="vendor_contractor">Vendor/Contractor</label>
+              <input type="text" id="vendor_contractor" name="vendor_contractor" required>
+            </div>
+          </div>
+
+          <div class="form-buttons">
+            <button type="submit" id="submitBtn" class="btn btn-primary">Add Entry</button>
+            <button type="button" id="updateBtn" class="btn btn-secondary" style="display:none;">Update Entry</button>
+            <button type="button" id="cancelBtn" class="btn btn-light" style="display:none;">Cancel</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="search-container">
+        <div class="search-grid">
+          <div class="field" style="padding-right: 10px;">
+            <label for="searchInput">Search by Material</label>
+            <input type="text" id="searchInput" placeholder="Enter material name...">
+          </div>
+
+          <div class="field" style="padding-right: 10px;">
+            <label for="fromDate">From Date</label>
+            <input type="date" id="fromDate">
+          </div>
+
+          <div class="field" style="padding-right: 10px;">
+            <label for="toDate">To Date</label>
+            <input type="date" id="toDate">
+          </div>
+
+          <button id="searchBtn" class="btn btn-secondary" style="margin-top: 24px;">Search</button>
+          <button id="clearSearchBtn" class="btn btn-light" style="margin-top: 24px;">Clear</button>
+
+
+        </div>
+      </div>
+
+
+
+      <div class="table-container">
+        <div class="table-header">
+          <h2>Database Records</h2>
+        </div>
+        <div class="table-wrapper">
+          <table id="entriesTable">
+            <thead>
+              <tr>
+                <th>Sr No</th>
+                <th>Issue Date</th>
+                <th>Vendor/Contractor</th>
+                <th>Slip No</th>
+                <th>Material</th>
+                <th>Unit</th>
+                <th>Quantity</th>
+                <th>Party Name</th>
+                <th>Remarks</th>
+                <th>Update</th>
+                <th>Delete</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // DOM Elements
+    const entryForm = document.getElementById('entryForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const updateBtn = document.getElementById('updateBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const refreshBtn = document.getElementById('refreshBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const searchInput = document.getElementById('searchInput');
+    const fromDateInput = document.getElementById('fromDate');
+    const toDateInput = document.getElementById('toDate');
+    const dateFilterBtn = document.getElementById('dateFilterBtn');
+    const searchBtn = document.getElementById('searchBtn');
+    const clearSearchBtn = document.getElementById('clearSearchBtn');
+    const hamburger = document.querySelector('.hamburger');
+    const dropdown = document.querySelector('.dropdown-content');
+    const messageDiv = document.getElementById('message');
+
+    // Global variable to store all entries
+    let allEntries = [];
+
+    // Load entries when page loads
+    window.addEventListener('DOMContentLoaded', () => {
+      loadAllEntries();
+      setDefaultDate();
+    });
+
+    // Set default date to today
+    function setDefaultDate() {
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('issue_date').value = today;
+    }
+
+    // Load all entries from server
+    async function loadAllEntries() {
+      try {
+        const res = await fetch('http://127.0.0.1:8000/issue_entries/');
+        if (!res.ok) throw new Error('Failed to fetch data');
+        
+        allEntries = await res.json();
+        renderTable(allEntries);
+      } catch (error) {
+        showMessage(`Error: ${error.message}`, 'error');
+      }
+    }
+
+    // Filter entries based on search term
+    function filterEntries(searchTerm) {
+      if (!searchTerm) return allEntries;
+      
+      const searchLower = searchTerm.toLowerCase();
+      return allEntries.filter(entry => 
+        entry.material && entry.material.toLowerCase().includes(searchLower)
+      );
+    }
+
+    // Render table with entries
+    function renderTable(data) {
+      const tableBody = document.querySelector("#entriesTable tbody");
+      tableBody.innerHTML = '';
+      
+      if (data.length === 0) {
+        const row = document.createElement('tr');
+        row.innerHTML = `<td colspan="11" style="text-align:center; padding: 30px; color: #7f8c8d;">No entries found</td>`;
+        tableBody.appendChild(row);
+        return;
+      }
+      
+      data.forEach(entry => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${entry.sr_no}</td>
+          <td>${entry.issue_date ? entry.issue_date.slice(0,10) : ''}</td>
+          <td>${entry.vendor_contractor}</td>
+          <td>${entry.slip_no}</td>
+          <td>${entry.material}</td>
+          <td>${entry.unit}</td>
+          <td>${entry.quantity}</td>
+          <td>${entry.party_name}</td>
+          <td>${entry.remarks || '-'}</td>
+          <td><button type="button" class="btn btn-secondary table-btn" onclick="editEntry(${entry.sr_no})">Edit</button></td>
+          <td><button type="button" class="btn btn-danger table-btn" onclick="deleteEntry(${entry.sr_no})">Delete</button></td>
+        `;
+        tableBody.appendChild(row);
+      });
+    }
+
+    // Delete entry
+    async function deleteEntry(sr_no) {
+      if (confirm("Are you sure you want to delete this entry?")) {
+        try {
+          const res = await fetch(`http://127.0.0.1:8000/issue_entries/${sr_no}`, { 
+            method: 'DELETE' 
+          });
+          
+          if (res.ok) {
+            showMessage('Entry deleted successfully!', 'success');
+            loadAllEntries();
+          } else {
+            throw new Error('Failed to delete entry');
+          }
+        } catch (error) {
+          showMessage(error.message, 'error');
+        }
+      }
+    }
+
+    // Edit entry
+    async function editEntry(sr_no) {
+      try {
+        const res = await fetch(`http://127.0.0.1:8000/issue_entries/${sr_no}`);
+        if (!res.ok) throw new Error('Failed to fetch entry');
+        
+        const data = await res.json();
+        document.getElementById('sr_no').value = data.sr_no;
+        document.getElementById('issue_date').value = data.issue_date ? data.issue_date.slice(0,10) : '';
+        document.getElementById('material').value = data.material;
+        document.getElementById('party_name').value = data.party_name;
+        document.getElementById('quantity').value = data.quantity;
+        document.getElementById('remarks').value = data.remarks || '';
+        document.getElementById('slip_no').value = data.slip_no;
+        document.getElementById('unit').value = data.unit;
+        document.getElementById('vendor_contractor').value = data.vendor_contractor;
+        
+        updateBtn.style.display = 'inline-block';
+        cancelBtn.style.display = 'inline-block';
+        submitBtn.style.display = 'none';
+        
+        // Scroll to form
+        entryForm.scrollIntoView({ behavior: 'smooth' });
+      } catch (error) {
+        showMessage(error.message, 'error');
+      }
+    }
+
+    // Form submit handler
+    entryForm.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const formData = getFormData();
+
+      try {
+        const response = await fetch('http://127.0.0.1:8000/issue_entries/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        });
+
+        if (response.ok) {
+          showMessage('Entry added successfully!', 'success');
+          entryForm.reset();
+          setDefaultDate();
+          loadAllEntries();
+        } else {
+          const errorData = await response.json();
+          throw new Error(errorData.detail || 'Failed to add entry');
+        }
+      } catch (error) {
+        showMessage(error.message, 'error');
+      }
+    });
+
+    // Update button handler
+    updateBtn.addEventListener('click', async function () {
+      const sr_no = document.getElementById('sr_no').value;
+      const formData = getFormData();
+
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/issue_entries/${sr_no}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        });
+
+        if (response.ok) {
+          showMessage('Entry updated successfully!', 'success');
+          resetForm();
+          loadAllEntries();
+        } else {
+          const errorData = await response.json();
+          throw new Error(errorData.detail || 'Failed to update entry');
+        }
+      } catch (error) {
+        showMessage(error.message, 'error');
+      }
+    });
+
+    // Cancel button handler
+    cancelBtn.addEventListener('click', function() {
+      resetForm();
+    });
+
+    // Reset form to original state
+    function resetForm() {
+      entryForm.reset();
+      setDefaultDate();
+      updateBtn.style.display = 'none';
+      cancelBtn.style.display = 'none';
+      submitBtn.style.display = 'inline-block';
+    }
+
+    // Get form data
+    function getFormData() {
+      return {
+        issue_date: document.getElementById('issue_date').value,
+        material: document.getElementById('material').value,
+        party_name: document.getElementById('party_name').value,
+        quantity: parseFloat(document.getElementById('quantity').value),
+        remarks: document.getElementById('remarks').value,
+        slip_no: parseInt(document.getElementById('slip_no').value),
+        unit: document.getElementById('unit').value,
+        vendor_contractor: document.getElementById('vendor_contractor').value
+      };
+    }
+
+    // Refresh button - brings page to original form
+    refreshBtn.addEventListener('click', function() {
+      // Reset form to original state
+      resetForm();
+      
+      // Clear search
+      searchInput.value = '';
+      
+
+     
+
+      // Reload all entries
+      loadAllEntries();
+      
+      // Show success message
+      showMessage('Data refreshed', 'success');
+    });
+
+    // Download CSV
+    downloadBtn.addEventListener('click', async function() {
+      try {
+        const searchTerm = searchInput.value.trim();
+        const dataToExport = searchTerm ? filterEntries(searchTerm) : allEntries;
+        
+        if (dataToExport.length === 0) {
+          showMessage('No data to download', 'error');
+          return;
+        }
+        
+        const headers = Object.keys(dataToExport[0]);
+        let csvContent = headers.join(',') + '\n';
+        
+        dataToExport.forEach(entry => {
+          const row = headers.map(header => {
+            if (typeof entry[header] === 'object') {
+              return JSON.stringify(entry[header]);
+            }
+            return entry[header];
+          });
+          csvContent += row.join(',') + '\n';
+        });
+        
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.setAttribute('href', url);
+        link.setAttribute('download', `issue_entries_${new Date().toISOString().slice(0,10)}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        showMessage('CSV download started', 'success');
+      } catch (error) {
+        showMessage(error.message, 'error');
+      }
+    });
+
+    // Logout button handler
+    logoutBtn.addEventListener('click', function() {
+      if (confirm('Are you sure you want to logout?')) {
+        // Clear any stored data
+        sessionStorage.clear();
+        localStorage.clear();
+        
+        // Redirect to login page or home
+        window.location.href = '/home'; // Change this to your login page
+        
+        // Alternative: just reload the page
+        // window.location.reload();
+      }
+    });
+
+    // Search functionality
+searchBtn.addEventListener('click', () => {
+  const materialSearch = searchInput.value.trim().toLowerCase();
+  const fromDate = fromDateInput.value;
+  const toDate = toDateInput.value;
+
+  let filtered = allEntries;
+
+  if (materialSearch) {
+    filtered = filtered.filter(entry => 
+      entry.material && entry.material.toLowerCase().includes(materialSearch)
+    );
+  }
+
+  if (fromDate) {
+    filtered = filtered.filter(entry => entry.issue_date >= fromDate);
+  }
+
+  if (toDate) {
+    filtered = filtered.filter(entry => entry.issue_date <= toDate);
+  }
+
+  renderTable(filtered);
+});
+
+
+
+  function filterEntriesByDate(fromDate, toDate) {
+  const from = fromDate ? new Date(fromDate) : null;
+  const to = toDate ? new Date(toDate) : null;
+
+  return allEntries.filter(entry => {
+    const entryDate = new Date(entry.issue_date);
+
+    // Include only entries within the range
+    const isAfterFrom = from ? entryDate >= from : true;
+    const isBeforeTo = to ? entryDate <= to : true;
+
+    return isAfterFrom && isBeforeTo;
+  });
+}
+
+    // Clear search
+    clearSearchBtn.addEventListener('click', function() {
+      searchInput.value = '';
+      fromDateInput.value = '';
+      toDateInput.value = '';
+      renderTable(allEntries);
+      showMessage('Search cleared', 'success');
+    });
+
+    // Search on Enter key
+    searchInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        searchBtn.click();
+      }
+    });
+
+
+
+
+
+
+
+
+    // Hamburger menu toggle
+    hamburger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function() {
+      dropdown.style.display = 'none';
+    });
+
+    // Show message
+    function showMessage(text, type) {
+      messageDiv.textContent = text;
+      messageDiv.className = `message ${type}`;
+      messageDiv.style.display = 'block';
+      
+      setTimeout(() => {
+        messageDiv.style.display = 'none';
+      }, 3000);
+    }
+
+
+
+
+  </script>
+</body>
+</html>
